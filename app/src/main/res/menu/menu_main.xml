@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.martinniemann.mandatoryassignment.MainActivity">
+    <item
+        android:id="@+id/sort"
+        android:icon="@drawable/baseline_sort_24"
+        android:title="sort"
+        app:iconTint="#FFFFFF"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/filter"
+        android:icon="@drawable/baseline_filter_alt_24"
+        android:title="filter"
+        app:iconTint="#FFFFFF"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/postItem"
+        android:icon="@drawable/baseline_post_add_24"
+        android:title="postItem"
+        app:iconTint="#FFFFFF"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/baseline_logout_24"
+        android:title="logout"
+        app:iconTint="#FFFFFF"
+        app:showAsAction="always" />
+</menu>

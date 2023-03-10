@@ -14,8 +14,11 @@ class SalesItemsRepository {
     private val salesItemStoreService: SalesItemStoreService
     val salesItemsLiveData: MutableLiveData<List<SalesItem>> = MutableLiveData<List<SalesItem>>()
     val errorMessageLiveData: MutableLiveData<String> = MutableLiveData()
-    // remember to set this value back to false when Snackbar message has been shown
+
+    // these variables are only meant to be observed for reassignment,
+    // and as such, their values hold no meaning
     val updateSalesItemsStatus: MutableLiveData<Boolean> = MutableLiveData(false)
+    val removeSalesItemStatus: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private val sortByPriceDirection: MutableLiveData<Boolean> = MutableLiveData(false)
     private val sortByTimeDirection: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -34,30 +37,6 @@ class SalesItemsRepository {
     fun getAllSalesItems() {
         salesItemStoreService
             .getAllSalesItems()
-            .enqueue(object : Callback<List<SalesItem>> {
-                override fun onResponse(call: Call<List<SalesItem>>,
-                                        response: Response<List<SalesItem>>)
-                {
-                    if (response.isSuccessful) {
-                        // this hopefully works
-                        salesItemsLiveData.postValue(response.body())
-                    } else {
-                        errorMessageLiveData.postValue(
-                            response.code().toString() + " " + response.message()
-                        )
-                    }
-                }
-
-                override fun onFailure(call: Call<List<SalesItem>>, t: Throwable) {
-                    errorMessageLiveData.postValue(t.message)
-                }
-            })
-    }
-
-    fun getSalesItemsByQueries(description: String, maxPrice: Int,
-                               sellerEmail: String, sortBy: String) {
-        salesItemStoreService
-            .getSalesItemsByQueries(description, maxPrice, sellerEmail, sortBy)
             .enqueue(object : Callback<List<SalesItem>> {
                 override fun onResponse(call: Call<List<SalesItem>>,
                                         response: Response<List<SalesItem>>)
@@ -109,7 +88,7 @@ class SalesItemsRepository {
                                         response: Response<SalesItem>)
                 {
                     if(response.isSuccessful) {
-                        updateSalesItemsStatus.postValue(true)
+                        removeSalesItemStatus.postValue(true)
                     } else {
                         errorMessageLiveData.postValue(
                             response.code().toString() + " " + response.message()
@@ -150,6 +129,15 @@ class SalesItemsRepository {
         } else if(sortByEmailDirection.value == true)  {
             sortByEmailDirection.postValue(false)
             salesItemsLiveData.value = salesItemsLiveData.value?.sortedByDescending { it.sellerEmail }
+        }
+    }
+
+    fun filterByDescription(description: String) {
+        if (description.isBlank()) {
+            getAllSalesItems()
+        } else {
+            getAllSalesItems()
+            salesItemsLiveData.value = salesItemsLiveData.value?.filter { item -> item.description.contains(description) }
         }
     }
 

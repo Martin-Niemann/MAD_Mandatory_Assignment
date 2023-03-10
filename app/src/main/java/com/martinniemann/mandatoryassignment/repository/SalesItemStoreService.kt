@@ -11,13 +11,6 @@ interface SalesItemStoreService {
     @GET("SalesItems")
     fun getAllSalesItems(): Call<List<SalesItem>>
 
-    @GET("SalesItems")
-    fun getSalesItemsByQueries(@Query("description") description: String,
-                               @Query("maxPrice") maxPrice: Int,
-                               @Query("sellerEmail") sellerEmail: String,
-                               @Query("sort_by") sort_by: String)
-    : Call<List<SalesItem>>
-
     @POST("SalesItems")
     fun postSalesItem(@Body salesItem: SalesItem): Call<SalesItem>
 

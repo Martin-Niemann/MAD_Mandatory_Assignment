@@ -9,12 +9,15 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import com.martinniemann.mandatoryassignment.databinding.ActivityMainBinding
+import com.martinniemann.mandatoryassignment.models.SalesItemsViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private val salesItemsViewModel: SalesItemsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +34,17 @@ class MainActivity : AppCompatActivity() {
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
+        }
+
+        // TODO observe should hopefully fire on reassignment
+        salesItemsViewModel.updateStatusLiveData.observe(this) { bool ->
+            Snackbar.make(binding.root, "Item has been posted", Snackbar.LENGTH_SHORT).show()
+        }
+        salesItemsViewModel.removeStatusLiveData.observe(this) { bool ->
+            Snackbar.make(binding.root, "Item has been removed", Snackbar.LENGTH_SHORT).show()
+        }
+        salesItemsViewModel.errorMessageLiveData.observe(this) { message ->
+            Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
         }
     }
 

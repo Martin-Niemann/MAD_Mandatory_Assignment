@@ -14,6 +14,12 @@ class SalesItemsRepository {
     private val salesItemStoreService: SalesItemStoreService
     val salesItemsLiveData: MutableLiveData<List<SalesItem>> = MutableLiveData<List<SalesItem>>()
     val errorMessageLiveData: MutableLiveData<String> = MutableLiveData()
+    // remember to set this value back to false when Snackbar message has been shown
+    val updateSalesItemsStatus: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    private val sortByPriceDirection: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val sortByTimeDirection: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val sortByEmailDirection: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         val build: Retrofit = Retrofit
@@ -73,5 +79,95 @@ class SalesItemsRepository {
     }
 
     fun addSalesItem(salesItem: SalesItem) {
+        salesItemStoreService
+            .postSalesItem(salesItem)
+            .enqueue(object : Callback<SalesItem> {
+                override fun onResponse(call: Call<SalesItem>,
+                                        response: Response<SalesItem>)
+                {
+                    if(response.isSuccessful) {
+                        updateSalesItemsStatus.postValue(true)
+                        getAllSalesItems()
+                    } else {
+                        errorMessageLiveData.postValue(
+                            response.code().toString() + " " + response.message()
+                        )
+                    }
+                }
+
+                override fun onFailure(call: Call<SalesItem>, t: Throwable) {
+                    errorMessageLiveData.postValue(t.message)
+                }
+            })
+    }
+
+    fun removeSalesItem(id: Int) {
+        salesItemStoreService
+            .deleteSalesItem(id)
+            .enqueue(object : Callback<SalesItem> {
+                override fun onResponse(call: Call<SalesItem>,
+                                        response: Response<SalesItem>)
+                {
+                    if(response.isSuccessful) {
+                        updateSalesItemsStatus.postValue(true)
+                    } else {
+                        errorMessageLiveData.postValue(
+                            response.code().toString() + " " + response.message()
+                        )
+                    }
+                }
+
+                override fun onFailure(call: Call<SalesItem>, t: Throwable) {
+                    errorMessageLiveData.postValue(t.message)
+                }
+            })
+    }
+
+    fun sortByPrice() {
+        if (sortByPriceDirection.value == false) {
+            sortByPriceDirection.postValue(true)
+            salesItemsLiveData.value = salesItemsLiveData.value?.sortedBy { it.price }
+        } else if(sortByPriceDirection.value == true)  {
+            sortByPriceDirection.postValue(false)
+            salesItemsLiveData.value = salesItemsLiveData.value?.sortedByDescending { it.price }
+        }
+    }
+
+    fun sortByTime() {
+        if (sortByTimeDirection.value == false) {
+            sortByTimeDirection.postValue(true)
+            salesItemsLiveData.value = salesItemsLiveData.value?.sortedBy { it.time }
+        } else if(sortByTimeDirection.value == true)  {
+            sortByTimeDirection.postValue(false)
+            salesItemsLiveData.value = salesItemsLiveData.value?.sortedByDescending { it.time }
+        }
+    }
+
+    fun sortByEmail() {
+        if (sortByEmailDirection.value == false) {
+            sortByEmailDirection.postValue(true)
+            salesItemsLiveData.value = salesItemsLiveData.value?.sortedBy { it.sellerEmail }
+        } else if(sortByEmailDirection.value == true)  {
+            sortByEmailDirection.postValue(false)
+            salesItemsLiveData.value = salesItemsLiveData.value?.sortedByDescending { it.sellerEmail }
+        }
+    }
+
+    fun filterByPrice(price: Int) {
+        if (price < 0) {
+            getAllSalesItems()
+        } else {
+            getAllSalesItems()
+            salesItemsLiveData.value = salesItemsLiveData.value?.filter { item -> item.price <= price }
+        }
+    }
+
+    fun filterByEmail(email: String) {
+        if (email.isBlank()) {
+            getAllSalesItems()
+        } else {
+            getAllSalesItems()
+            salesItemsLiveData.value = salesItemsLiveData.value?.filter { item -> item.sellerEmail == email }
+        }
     }
 }

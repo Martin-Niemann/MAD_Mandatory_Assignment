@@ -42,7 +42,7 @@ class SalesItemsRepository {
                                         response: Response<List<SalesItem>>)
                 {
                     if (response.isSuccessful) {
-                        // this hopefully works
+                        // TODO this hopefully works
                         salesItemsLiveData.postValue(response.body())
                     } else {
                         errorMessageLiveData.postValue(

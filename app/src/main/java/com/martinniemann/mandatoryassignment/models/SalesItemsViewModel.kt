@@ -16,6 +16,10 @@ class SalesItemsViewModel : ViewModel() {
         reload()
     }
 
+    operator fun get(index: Int): SalesItem? {
+        return salesItemsLiveData.value?.get(index)
+    }
+
     fun reload() {
         repository.getAllSalesItems()
     }

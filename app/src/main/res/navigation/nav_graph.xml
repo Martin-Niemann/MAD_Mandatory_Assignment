@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.martinniemann.mandatoryassignment.FirstFragment"
-        android:label="@string/first_fragment_label"
+        android:label="SalesItems"
         tools:layout="@layout/fragment_first">
 
         <action
@@ -18,11 +18,14 @@
     <fragment
         android:id="@+id/SecondFragment"
         android:name="com.martinniemann.mandatoryassignment.SecondFragment"
-        android:label="@string/second_fragment_label"
+        android:label="Details"
         tools:layout="@layout/fragment_second">
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
+        <argument
+            android:name="position"
+            app:argType="integer" />
     </fragment>
 </navigation>

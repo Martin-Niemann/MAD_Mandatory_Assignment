@@ -17,8 +17,8 @@ class SalesItemsRepository {
 
     // these variables are only meant to be observed for reassignment,
     // and as such, their values hold no meaning
-    val updateSalesItemsStatus: MutableLiveData<Boolean> = MutableLiveData(false)
-    val removeSalesItemStatus: MutableLiveData<Boolean> = MutableLiveData(false)
+    val updateSalesItemsStatus: MutableLiveData<Boolean> = MutableLiveData()
+    val removeSalesItemStatus: MutableLiveData<Boolean> = MutableLiveData()
 
     private val sortByPriceDirection: MutableLiveData<Boolean> = MutableLiveData(false)
     private val sortByTimeDirection: MutableLiveData<Boolean> = MutableLiveData(false)

@@ -29,11 +29,9 @@ class FirstFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
+    ): View {
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,6 +41,7 @@ class FirstFragment : Fragment() {
             binding.progressbar.visibility = View.GONE
             binding.recyclerView.visibility = if (salesItems == null) View.GONE else View.VISIBLE
             if (salesItems != null) {
+                binding.textviewMessage.visibility = View.GONE
                 val adapter = ListItemCardAdapter(salesItems) { position ->
                     val action =
                         FirstFragmentDirections.actionFirstFragmentToSecondFragment(position)
@@ -63,6 +62,7 @@ class FirstFragment : Fragment() {
         }
 
         salesItemsViewModel.errorMessageLiveData.observe(viewLifecycleOwner) { errorMessage ->
+            binding.textviewMessage.visibility = View.VISIBLE
             binding.textviewMessage.text = errorMessage
         }
 

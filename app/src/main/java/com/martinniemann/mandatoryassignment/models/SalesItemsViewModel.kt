@@ -1,7 +1,6 @@
 package com.martinniemann.mandatoryassignment.models
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.martinniemann.mandatoryassignment.repository.SalesItemsRepository
 

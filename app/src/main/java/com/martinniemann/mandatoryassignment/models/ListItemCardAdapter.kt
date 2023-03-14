@@ -16,7 +16,7 @@ class ListItemCardAdapter(private val items: List<SalesItem>,
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int)
-    : ListItemCardAdapter.ItemViewHolder {
+    : ItemViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.list_item_card, viewGroup, false)
         return ItemViewHolder(view, onItemClicked)
@@ -24,7 +24,7 @@ class ListItemCardAdapter(private val items: List<SalesItem>,
 
     override fun onBindViewHolder(viewHolder: ItemViewHolder, position: Int) {
         viewHolder.descriptionTextView.text = items[position].description
-        viewHolder.priceTextView.text = items[position].price.toString()
+        viewHolder.priceTextView.text = items[position].price.toString() + " kr."
     }
 
     class ItemViewHolder(itemView: View, private val onItemClicked: (position: Int) -> Unit)

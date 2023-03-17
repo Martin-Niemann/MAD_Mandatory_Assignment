@@ -2,11 +2,12 @@ package com.martinniemann.mandatoryassignment
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.*
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.martinniemann.mandatoryassignment.databinding.FragmentFirstBinding
@@ -36,6 +37,7 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupMenu()
 
         salesItemsViewModel.salesItemsLiveData.observe(viewLifecycleOwner) {salesItems ->
             binding.progressbar.visibility = View.GONE
@@ -72,6 +74,25 @@ class FirstFragment : Fragment() {
             salesItemsViewModel.reload()
             binding.swiperefresh.isRefreshing = false
         }
+    }
+
+    private fun setupMenu() {
+        val menuHost = requireActivity() as MenuHost
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_main, menu)
+            }
+
+            override fun onMenuItemSelected(item: MenuItem): Boolean {
+                return when (item.itemId) {
+                    R.id.postItem -> true
+                    R.id.filter -> true
+                    R.id.sort -> true
+                    R.id.logout -> true
+                    else -> true
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     override fun onDestroyView() {

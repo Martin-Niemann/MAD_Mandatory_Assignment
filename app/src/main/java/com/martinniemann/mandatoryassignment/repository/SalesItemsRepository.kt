@@ -15,10 +15,11 @@ class SalesItemsRepository {
     val salesItemsLiveData: MutableLiveData<List<SalesItem>> = MutableLiveData<List<SalesItem>>()
     val errorMessageLiveData: MutableLiveData<String> = MutableLiveData()
 
-    // these variables are only meant to be observed for reassignment,
+    // these variables are only meant to be observed on reassignment,
     // and as such, their values hold no meaning
     val updateSalesItemsStatus: MutableLiveData<Boolean> = MutableLiveData()
     val removeSalesItemStatus: MutableLiveData<Boolean> = MutableLiveData()
+    val isFinishedFetchingSalesItems: MutableLiveData<Boolean> = MutableLiveData()
 
     private val sortByPriceDirection: MutableLiveData<Boolean> = MutableLiveData(false)
     private val sortByTimeDirection: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -44,7 +45,7 @@ class SalesItemsRepository {
                     if (response.isSuccessful) {
                         // TODO this hopefully works
                         salesItemsLiveData.postValue(response.body())
-                        // TODO make a bool for the refresh spinner to make it stop spinning
+                        isFinishedFetchingSalesItems.postValue(true)
                     } else {
                         errorMessageLiveData.postValue(
                             response.code().toString() + " " + response.message()

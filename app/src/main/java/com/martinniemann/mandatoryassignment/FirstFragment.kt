@@ -72,7 +72,9 @@ class FirstFragment : Fragment() {
 
         binding.swiperefresh.setOnRefreshListener {
             salesItemsViewModel.reload()
-            binding.swiperefresh.isRefreshing = false
+            salesItemsViewModel.hasFetchedLiveData.observe(this) { bool ->
+                binding.swiperefresh.isRefreshing = false
+            }
         }
     }
 

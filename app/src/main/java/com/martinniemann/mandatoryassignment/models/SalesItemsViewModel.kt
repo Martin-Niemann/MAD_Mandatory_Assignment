@@ -10,6 +10,7 @@ class SalesItemsViewModel : ViewModel() {
     val updateStatusLiveData: LiveData<Boolean> = repository.updateSalesItemsStatus
     val removeStatusLiveData: LiveData<Boolean> = repository.removeSalesItemStatus
     val errorMessageLiveData: LiveData<String> = repository.errorMessageLiveData
+    val hasFetchedLiveData: LiveData<Boolean> = repository.isFinishedFetchingSalesItems
 
     init {
         reload()

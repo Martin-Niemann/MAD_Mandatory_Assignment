@@ -44,6 +44,7 @@ class SalesItemsRepository {
                     if (response.isSuccessful) {
                         // TODO this hopefully works
                         salesItemsLiveData.postValue(response.body())
+                        // TODO make a bool for the refresh spinner to make it stop spinning
                     } else {
                         errorMessageLiveData.postValue(
                             response.code().toString() + " " + response.message()

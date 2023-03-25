@@ -7,8 +7,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
 import androidx.activity.viewModels
 import com.martinniemann.mandatoryassignment.databinding.ActivityMainBinding
 import com.martinniemann.mandatoryassignment.models.SalesItemsViewModel

@@ -2,6 +2,7 @@ package com.martinniemann.mandatoryassignment
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -17,8 +18,7 @@ import com.martinniemann.mandatoryassignment.models.SalesItemsViewModel
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment() {
-
+class FirstFragment : Fragment(), SortByDialogListener {
     private var _binding: FragmentFirstBinding? = null
 
     // This property is only valid between onCreateView and
@@ -89,7 +89,7 @@ class FirstFragment : Fragment() {
                 return when (item.itemId) {
                     R.id.postItem -> true
                     R.id.filter -> true
-                    R.id.sort -> true
+                    R.id.sort -> {showSortByDialog()}
                     R.id.logout -> true
                     else -> true
                 }
@@ -97,8 +97,18 @@ class FirstFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
+    private fun showSortByDialog(): Boolean {
+        val dialog = SortByDialogFragment(this)
+        dialog.show(parentFragmentManager, "SortByDialogFragment")
+        return true
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDialogPositiveClick(sortMethod: String, sortDirection: String) {
+        Log.d("First Fragment", "$sortMethod $sortDirection")
     }
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/sort_by"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".SortByDialogFragment"
+    >
+
+    <Spinner
+        android:id="@+id/sort_method"
+        android:contentDescription="Choose sorting method"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:id="@+id/sort_direction"
+        android:contentDescription="Choose sorting direction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

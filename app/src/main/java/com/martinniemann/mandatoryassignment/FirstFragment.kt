@@ -2,7 +2,6 @@ package com.martinniemann.mandatoryassignment
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -26,6 +25,9 @@ class FirstFragment : Fragment(), SortByDialogListener {
     private val binding get() = _binding!!
 
     private val salesItemsViewModel: SalesItemsViewModel by activityViewModels()
+
+    private var sortMethod: String = ""
+    private var sortDirection: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -98,7 +100,7 @@ class FirstFragment : Fragment(), SortByDialogListener {
     }
 
     private fun showSortByDialog(): Boolean {
-        val dialog = SortByDialogFragment(this)
+        val dialog = SortByDialogFragment(this, sortMethod, sortDirection)
         dialog.show(parentFragmentManager, "SortByDialogFragment")
         return true
     }
@@ -109,6 +111,7 @@ class FirstFragment : Fragment(), SortByDialogListener {
     }
 
     override fun onDialogPositiveClick(sortMethod: String, sortDirection: String) {
-        Log.d("First Fragment", "$sortMethod $sortDirection")
+        this.sortMethod = sortMethod
+        this.sortDirection = sortDirection
     }
 }

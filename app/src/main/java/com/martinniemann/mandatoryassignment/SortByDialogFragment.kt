@@ -2,7 +2,6 @@ package com.martinniemann.mandatoryassignment
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +16,7 @@ interface SortByDialogListener {
     fun onDialogPositiveClick(sortMethod: String, sortDirection: String)
 }
 
-class SortByDialogFragment(private val sortByDialogListener: SortByDialogListener) : DialogFragment(), AdapterView.OnItemSelectedListener {
+class SortByDialogFragment(private val sortByDialogListener: SortByDialogListener, private val existingSortMethod: String, private val existingSortDirection: String) : DialogFragment(), AdapterView.OnItemSelectedListener {
     private var _binding: SortByBinding? = null
     private val binding get() = _binding!!
 
@@ -35,6 +34,9 @@ class SortByDialogFragment(private val sortByDialogListener: SortByDialogListene
             .also { adapter ->
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 sortMethodSpinner.adapter = adapter
+                if(existingSortMethod.isNotEmpty()) {
+                    sortMethodSpinner.setSelection(adapter.getPosition(existingSortMethod))
+                }
         }
 
         val sortDirectionSpinner: Spinner = binding.sortDirection
@@ -45,9 +47,10 @@ class SortByDialogFragment(private val sortByDialogListener: SortByDialogListene
             .also { adapter ->
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 sortDirectionSpinner.adapter = adapter
+                if(existingSortDirection.isNotEmpty()) {
+                    sortDirectionSpinner.setSelection(adapter.getPosition(existingSortDirection))
+                }
         }
-
-        val inflater = requireActivity().layoutInflater
 
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)

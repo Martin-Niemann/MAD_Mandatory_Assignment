@@ -32,16 +32,12 @@ class SalesItemsViewModel : ViewModel() {
         repository.removeSalesItem(id)
     }
 
-    fun sortByPrice() {
-        repository.sortByPrice()
+    fun sortByPrice(direction: String) {
+        repository.sortByPrice(direction)
     }
 
-    fun sortByTime() {
-        repository.sortByTime()
-    }
-
-    fun sortByEmail() {
-        repository.sortByEmail()
+    fun sortByTime(direction: String) {
+        repository.sortByTime(direction)
     }
 
     fun filterByDescription(description: String) {

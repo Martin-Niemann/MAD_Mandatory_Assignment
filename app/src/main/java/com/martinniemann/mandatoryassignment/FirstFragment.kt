@@ -111,7 +111,13 @@ class FirstFragment : Fragment(), SortByDialogListener {
     }
 
     override fun onDialogPositiveClick(sortMethod: String, sortDirection: String) {
+        // Save the values in this fragment and send them back to the next dialog
         this.sortMethod = sortMethod
         this.sortDirection = sortDirection
+
+        when(sortMethod) {
+            "Price" -> {salesItemsViewModel.sortByPrice(sortDirection)}
+            "Time" -> {salesItemsViewModel.sortByTime(sortDirection)}
+        }
     }
 }

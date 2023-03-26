@@ -21,10 +21,6 @@ class SalesItemsRepository {
     val removeSalesItemStatus: MutableLiveData<Boolean> = MutableLiveData()
     val isFinishedFetchingSalesItems: MutableLiveData<Boolean> = MutableLiveData()
 
-    private val sortByPriceDirection: MutableLiveData<Boolean> = MutableLiveData(false)
-    private val sortByTimeDirection: MutableLiveData<Boolean> = MutableLiveData(false)
-    private val sortByEmailDirection: MutableLiveData<Boolean> = MutableLiveData(false)
-
     init {
         val build: Retrofit = Retrofit
             .Builder()
@@ -104,33 +100,19 @@ class SalesItemsRepository {
             })
     }
 
-    fun sortByPrice() {
-        if (sortByPriceDirection.value == false) {
-            sortByPriceDirection.postValue(true)
+    fun sortByPrice(direction: String) {
+        if (direction == "Lowest") {
             salesItemsLiveData.value = salesItemsLiveData.value?.sortedBy { it.price }
-        } else if(sortByPriceDirection.value == true)  {
-            sortByPriceDirection.postValue(false)
+        } else if(direction == "Highest")  {
             salesItemsLiveData.value = salesItemsLiveData.value?.sortedByDescending { it.price }
         }
     }
 
-    fun sortByTime() {
-        if (sortByTimeDirection.value == false) {
-            sortByTimeDirection.postValue(true)
+    fun sortByTime(direction: String) {
+        if (direction == "Lowest") {
             salesItemsLiveData.value = salesItemsLiveData.value?.sortedBy { it.time }
-        } else if(sortByTimeDirection.value == true)  {
-            sortByTimeDirection.postValue(false)
+        } else if(direction == "Highest")  {
             salesItemsLiveData.value = salesItemsLiveData.value?.sortedByDescending { it.time }
-        }
-    }
-
-    fun sortByEmail() {
-        if (sortByEmailDirection.value == false) {
-            sortByEmailDirection.postValue(true)
-            salesItemsLiveData.value = salesItemsLiveData.value?.sortedBy { it.sellerEmail }
-        } else if(sortByEmailDirection.value == true)  {
-            sortByEmailDirection.postValue(false)
-            salesItemsLiveData.value = salesItemsLiveData.value?.sortedByDescending { it.sellerEmail }
         }
     }
 

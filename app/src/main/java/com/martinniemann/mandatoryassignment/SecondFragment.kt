@@ -5,8 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.activityViewModels
 import com.martinniemann.mandatoryassignment.databinding.FragmentSecondBinding
+import com.martinniemann.mandatoryassignment.models.SalesItem
+import com.martinniemann.mandatoryassignment.models.SalesItemsViewModel
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -18,6 +20,8 @@ class SecondFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private val salesItemsViewModel: SalesItemsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,8 +38,14 @@ class SecondFragment : Fragment() {
         val secondFragmentArgs: SecondFragmentArgs = SecondFragmentArgs.fromBundle(bundle)
         val position = secondFragmentArgs.position
 
-        binding.buttonSecond.setOnClickListener {
-            findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+        val salesItem: SalesItem? = salesItemsViewModel[position]
+
+        if(salesItem != null) {
+            binding.description.text = salesItem.description
+            binding.price.text = salesItem.price.toString()
+            binding.sellerEmail.text = salesItem.sellerEmail
+            binding.sellerPhone.text = salesItem.sellerPhone
+            binding.time.text = salesItem.time.toString()
         }
     }
 

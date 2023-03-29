@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.martinniemann.mandatoryassignment.databinding.FragmentFirstBinding
 import com.martinniemann.mandatoryassignment.models.ListItemCardAdapter
 import com.martinniemann.mandatoryassignment.models.SalesItemsViewModel
+import io.appwrite.Client
+import io.appwrite.services.Account
+import kotlinx.coroutines.runBlocking
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -74,7 +77,7 @@ class FirstFragment : Fragment(), SortByDialogListener {
 
         binding.swiperefresh.setOnRefreshListener {
             salesItemsViewModel.reload()
-            salesItemsViewModel.hasFetchedLiveData.observe(this) { bool ->
+            salesItemsViewModel.hasFetchedLiveData.observe(viewLifecycleOwner) { bool ->
                 binding.swiperefresh.isRefreshing = false
             }
         }
@@ -92,11 +95,29 @@ class FirstFragment : Fragment(), SortByDialogListener {
                     R.id.postItem -> true
                     R.id.filter -> true
                     R.id.sort -> {showSortByDialog()}
-                    R.id.logout -> true
+                    R.id.logout -> {
+                        runBlocking(){logout()}
+                    }
                     else -> true
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    // TODO if the server ever hangs,
+    //  we probably will so for all eternity
+    private suspend fun logout(): Boolean {
+        val client = Client(requireContext())
+            .setEndpoint("***REMOVED***")
+            .setProject("***REMOVED***")
+        val account = Account(client)
+        account.deleteSession("current")
+
+        val action =
+            FirstFragmentDirections.actionFirstFragmentToLoginFragment()
+        findNavController().navigate(action)
+
+        return true
     }
 
     private fun showSortByDialog(): Boolean {

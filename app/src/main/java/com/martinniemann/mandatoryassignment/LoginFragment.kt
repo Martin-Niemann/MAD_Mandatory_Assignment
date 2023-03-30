@@ -10,9 +10,15 @@ import com.martinniemann.mandatoryassignment.databinding.FragmentLoginBinding
 import io.appwrite.Client
 import io.appwrite.exceptions.AppwriteException
 import io.appwrite.services.Account
+import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.runBlocking
 
 class LoginFragment : Fragment() {
+    private val dotenv = dotenv {
+        directory = "/assets"
+        filename = "env" // instead of '.env', use 'env'
+    }
+
     private var _binding: FragmentLoginBinding? = null
 
     // This property is only valid between onCreateView and
@@ -32,8 +38,8 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val client = Client(requireContext())
-            .setEndpoint("***REMOVED***")
-            .setProject("***REMOVED***")
+            .setEndpoint(dotenv["APPWRITE_ENDPOINT"])
+            .setProject(dotenv["APPWRITE_PROJECT"])
         val account = Account(client)
 
         binding.registerButton.setOnClickListener {

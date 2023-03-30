@@ -16,11 +16,17 @@ import com.martinniemann.mandatoryassignment.models.SalesItemsViewModel
 import io.appwrite.Client
 import io.appwrite.services.Account
 import kotlinx.coroutines.runBlocking
+import io.github.cdimascio.dotenv.dotenv
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 class FirstFragment : Fragment(), SortByDialogListener {
+    private val dotenv = dotenv {
+        directory = "/assets"
+        filename = "env" // instead of '.env', use 'env'
+    }
+
     private var _binding: FragmentFirstBinding? = null
 
     // This property is only valid between onCreateView and
@@ -108,8 +114,8 @@ class FirstFragment : Fragment(), SortByDialogListener {
     //  we probably will so for all eternity
     private suspend fun logout(): Boolean {
         val client = Client(requireContext())
-            .setEndpoint("***REMOVED***")
-            .setProject("***REMOVED***")
+            .setEndpoint(dotenv["APPWRITE_ENDPOINT"])
+            .setProject(dotenv["APPWRITE_PROJECT"])
         val account = Account(client)
         account.deleteSession("current")
 

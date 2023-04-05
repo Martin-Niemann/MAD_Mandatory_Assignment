@@ -29,11 +29,6 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-
         // TODO observe should hopefully fire on reassignment
         salesItemsViewModel.updateStatusLiveData.observe(this) { bool ->
             Snackbar.make(binding.root, "Item has been posted", Snackbar.LENGTH_SHORT).show()

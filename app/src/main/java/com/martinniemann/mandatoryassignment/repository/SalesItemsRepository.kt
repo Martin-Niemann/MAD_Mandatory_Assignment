@@ -83,7 +83,6 @@ class SalesItemsRepository {
                 {
                     if(response.isSuccessful) {
                         updateSalesItemsStatus.postValue(true)
-                        getAllSalesItems(null, null)
                     } else {
                         errorMessageLiveData.postValue(
                             response.code().toString() + " " + response.message()

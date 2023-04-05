@@ -15,8 +15,8 @@
         app:iconTint="#FFFFFF"
         app:showAsAction="always" />
     <item
-        android:id="@+id/postItem"
-        android:icon="@drawable/baseline_post_add_24"
+        android:id="@+id/myStore"
+        android:icon="@drawable/baseline_store_24"
         android:title="postItem"
         app:iconTint="#FFFFFF"
         app:showAsAction="always" />

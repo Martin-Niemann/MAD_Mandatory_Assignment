@@ -108,10 +108,16 @@ class FirstFragment : Fragment(), SortByDialogListener {
             }
         }
 
-        binding.addItemButton.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        binding.addItemButton.setOnClickListener{
+            val action =
+                FirstFragmentDirections.actionFirstFragmentToAddSalesItemFragment()
+            findNavController().navigate(action)
         }
+
+        //binding.addItemButton.setOnClickListener { view ->
+          //  Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            //    .setAction("Action", null).show()
+        //}
     }
 
     private fun setupMenu() {

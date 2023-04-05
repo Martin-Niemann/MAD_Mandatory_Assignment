@@ -28,7 +28,11 @@
         <action
             android:id="@+id/action_FirstFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_AddSalesItemFragment"
+            app:destination="@id/AddSalesItemFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/SecondFragment"
         android:name="com.martinniemann.mandatoryassignment.SecondFragment"
@@ -41,5 +45,16 @@
         <argument
             android:name="position"
             app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/AddSalesItemFragment"
+        android:name="com.martinniemann.mandatoryassignment.AddSalesItemFragment"
+        android:label="Post sales item"
+        tools:layout="@layout/fragment_add_sales_item">
+
+        <action
+            android:id="@+id/action_AddSalesItemFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
     </fragment>
 </navigation>

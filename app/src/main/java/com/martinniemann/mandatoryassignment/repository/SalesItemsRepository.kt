@@ -9,6 +9,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SalesItemsRepository {
+    enum class FilterFunction() {
+        DESCRIPTION(),
+        PRICE(),
+        EMAIL()
+    }
+
     private val url = "https://anbo-salesitems.azurewebsites.net/api/"
 
     private val salesItemStoreService: SalesItemStoreService
@@ -28,10 +34,9 @@ class SalesItemsRepository {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         salesItemStoreService = build.create(SalesItemStoreService::class.java)
-        getAllSalesItems()
     }
 
-    fun getAllSalesItems() {
+    fun getAllSalesItems(filterFunction: FilterFunction?, filterFunctionArgument: String?) {
         salesItemStoreService
             .getAllSalesItems()
             .enqueue(object : Callback<List<SalesItem>> {
@@ -39,9 +44,23 @@ class SalesItemsRepository {
                                         response: Response<List<SalesItem>>)
                 {
                     if (response.isSuccessful) {
-                        // TODO this hopefully works
-                        salesItemsLiveData.postValue(response.body())
-                        isFinishedFetchingSalesItems.postValue(true)
+                        if(response.body().isNullOrEmpty()) {
+                            errorMessageLiveData.value = "Server returned no items."
+                            return
+                        }
+
+                        if (filterFunction != null && filterFunctionArgument != null) {
+                            when(filterFunction) {
+                                FilterFunction.DESCRIPTION -> {filterByDescription(response.body()!!, filterFunctionArgument)}
+                                FilterFunction.PRICE -> {filterByPrice(response.body()!!, filterFunctionArgument)}
+                                FilterFunction.EMAIL -> {filterByEmail(response.body()!!, filterFunctionArgument)}
+                            }
+                            isFinishedFetchingSalesItems.value = true
+                        } else {
+                            salesItemsLiveData.value = response.body()
+                            isFinishedFetchingSalesItems.value = true
+                        }
+
                     } else {
                         errorMessageLiveData.postValue(
                             response.code().toString() + " " + response.message()
@@ -64,7 +83,7 @@ class SalesItemsRepository {
                 {
                     if(response.isSuccessful) {
                         updateSalesItemsStatus.postValue(true)
-                        getAllSalesItems()
+                        getAllSalesItems(null, null)
                     } else {
                         errorMessageLiveData.postValue(
                             response.code().toString() + " " + response.message()
@@ -116,30 +135,16 @@ class SalesItemsRepository {
         }
     }
 
-    fun filterByDescription(description: String) {
-        if (description.isBlank()) {
-            getAllSalesItems()
-        } else {
-            getAllSalesItems()
-            salesItemsLiveData.value = salesItemsLiveData.value?.filter { item -> item.description.contains(description) }
-        }
+    private fun filterByDescription(serverResponse: List<SalesItem>, description: String) {
+        salesItemsLiveData.value = serverResponse.filter { item -> item.description.contains(description) }
     }
 
-    fun filterByPrice(price: Int) {
-        if (price < 0) {
-            getAllSalesItems()
-        } else {
-            getAllSalesItems()
-            salesItemsLiveData.value = salesItemsLiveData.value?.filter { item -> item.price <= price }
-        }
+    private fun filterByPrice(serverResponse: List<SalesItem>, price: String) {
+        val priceToInt = price.toInt()
+        salesItemsLiveData.value = serverResponse.filter { item -> item.price <= priceToInt }
     }
 
-    fun filterByEmail(email: String) {
-        if (email.isBlank()) {
-            getAllSalesItems()
-        } else {
-            getAllSalesItems()
-            salesItemsLiveData.value = salesItemsLiveData.value?.filter { item -> item.sellerEmail == email }
-        }
+    private fun filterByEmail(serverResponse: List<SalesItem>, email: String) {
+        salesItemsLiveData.value = serverResponse.filter { item -> item.sellerEmail == email }
     }
 }

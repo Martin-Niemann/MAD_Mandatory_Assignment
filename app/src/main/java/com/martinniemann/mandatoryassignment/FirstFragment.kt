@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.martinniemann.mandatoryassignment.databinding.FragmentFirstBinding
 import com.martinniemann.mandatoryassignment.models.ListItemCardAdapter
 import com.martinniemann.mandatoryassignment.models.SalesItemsViewModel
@@ -38,6 +39,10 @@ class FirstFragment : Fragment(), SortByDialogListener {
     private var sortMethod: String = ""
     private var sortDirection: String = ""
 
+    private lateinit var account: Account
+
+    private var myItemsAreShown: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,12 +53,21 @@ class FirstFragment : Fragment(), SortByDialogListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val client = Client(requireContext())
+            .setEndpoint(dotenv["APPWRITE_ENDPOINT"])
+            .setProject(dotenv["APPWRITE_PROJECT"])
+        account = Account(client)
+
         setupMenu()
 
-        salesItemsViewModel.salesItemsLiveData.observe(viewLifecycleOwner) {salesItems ->
+        // do the first load of of items
+        salesItemsViewModel.reload()
+
+        salesItemsViewModel.salesItemsLiveData.observe(viewLifecycleOwner) { salesItems ->
             binding.progressbar.visibility = View.GONE
-            binding.recyclerView.visibility = if (salesItems == null) View.GONE else View.VISIBLE
-            if (salesItems != null) {
+            binding.recyclerView.visibility = if (salesItems.isEmpty()) View.GONE else View.VISIBLE
+            if (salesItems.isNotEmpty()) {
                 binding.textviewMessage.visibility = View.GONE
                 val adapter = ListItemCardAdapter(salesItems) { position ->
                     val action =
@@ -79,13 +93,24 @@ class FirstFragment : Fragment(), SortByDialogListener {
             binding.textviewMessage.text = errorMessage
         }
 
-        salesItemsViewModel.reload()
-
         binding.swiperefresh.setOnRefreshListener {
-            salesItemsViewModel.reload()
-            salesItemsViewModel.hasFetchedLiveData.observe(viewLifecycleOwner) { bool ->
+            binding.textviewMessage.visibility = View.GONE
+
+            if(!myItemsAreShown) {
+                salesItemsViewModel.reload()
+            }
+            if(myItemsAreShown) {
+                getUserSalesItems()
+            }
+
+            salesItemsViewModel.hasFetchedLiveData.observe(viewLifecycleOwner) {
                 binding.swiperefresh.isRefreshing = false
             }
+        }
+
+        binding.addItemButton.setOnClickListener { view ->
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
         }
     }
 
@@ -98,11 +123,11 @@ class FirstFragment : Fragment(), SortByDialogListener {
 
             override fun onMenuItemSelected(item: MenuItem): Boolean {
                 return when (item.itemId) {
-                    R.id.postItem -> true
+                    R.id.myStore -> {changeStoreStateAllOrUser()}
                     R.id.filter -> true
                     R.id.sort -> {showSortByDialog()}
                     R.id.logout -> {
-                        runBlocking(){logout()}
+                        runBlocking {logout()}
                     }
                     else -> true
                 }
@@ -110,13 +135,28 @@ class FirstFragment : Fragment(), SortByDialogListener {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
+    private fun changeStoreStateAllOrUser(): Boolean {
+        return if(!myItemsAreShown) {
+            binding.addItemButton.visibility = View.VISIBLE
+            getUserSalesItems()
+            myItemsAreShown = true
+            true
+        } else {
+            binding.addItemButton.visibility = View.GONE
+            salesItemsViewModel.reload()
+            myItemsAreShown = false
+            true
+        }
+    }
+    
+    private fun getUserSalesItems() {
+        val email: String = runBlocking {account.get().email}
+        salesItemsViewModel.filterByEmail(email)
+    }
+
     // TODO if the server ever hangs,
     //  we probably will so for all eternity
     private suspend fun logout(): Boolean {
-        val client = Client(requireContext())
-            .setEndpoint(dotenv["APPWRITE_ENDPOINT"])
-            .setProject(dotenv["APPWRITE_PROJECT"])
-        val account = Account(client)
         account.deleteSession("current")
 
         val action =

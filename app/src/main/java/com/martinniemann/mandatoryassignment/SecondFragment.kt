@@ -6,14 +6,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.martinniemann.mandatoryassignment.databinding.FragmentSecondBinding
 import com.martinniemann.mandatoryassignment.models.SalesItem
 import com.martinniemann.mandatoryassignment.models.SalesItemsViewModel
+import io.appwrite.Client
+import io.appwrite.services.Account
+import io.github.cdimascio.dotenv.dotenv
+import kotlinx.coroutines.runBlocking
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
 class SecondFragment : Fragment() {
+    private val dotenv = dotenv {
+        directory = "/assets"
+        filename = "env" // instead of '.env', use 'env'
+    }
 
     private var _binding: FragmentSecondBinding? = null
 
@@ -22,6 +31,8 @@ class SecondFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val salesItemsViewModel: SalesItemsViewModel by activityViewModels()
+
+    private lateinit var account: Account
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +44,11 @@ class SecondFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val client = Client(requireContext())
+            .setEndpoint(dotenv["APPWRITE_ENDPOINT"])
+            .setProject(dotenv["APPWRITE_PROJECT"])
+        account = Account(client)
 
         val bundle = requireArguments()
         val secondFragmentArgs: SecondFragmentArgs = SecondFragmentArgs.fromBundle(bundle)
@@ -46,6 +62,28 @@ class SecondFragment : Fragment() {
             binding.sellerEmail.text = salesItem.sellerEmail
             binding.sellerPhone.text = salesItem.sellerPhone
             binding.time.text = salesItem.time.toString()
+
+            val userEmail = runBlocking {account.get().email}
+
+            if(salesItem.sellerEmail == userEmail) {
+                binding.removeItemButton.visibility = View.VISIBLE
+            }
+
+            binding.removeItemButton.setOnClickListener {
+                binding.progressBar.visibility = View.VISIBLE
+                salesItemsViewModel.delete(salesItem.id)
+            }
+
+            salesItemsViewModel.removeStatusLiveData.observe(viewLifecycleOwner) {
+                val action =
+                    SecondFragmentDirections.actionSecondFragmentToFirstFragment()
+                findNavController().navigate(action)
+            }
+        }
+
+        salesItemsViewModel.errorMessageLiveData.observe(viewLifecycleOwner) {errorMessage ->
+            binding.progressBar.visibility = View.GONE
+            binding.errorMessage.text = errorMessage
         }
     }
 

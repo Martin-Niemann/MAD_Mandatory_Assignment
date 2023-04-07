@@ -135,7 +135,7 @@ class SalesItemsRepository {
     }
 
     private fun filterByDescription(serverResponse: List<SalesItem>, description: String) {
-        salesItemsLiveData.value = serverResponse.filter { item -> item.description.contains(description) }
+        salesItemsLiveData.value = serverResponse.filter { item -> item.description.contains(description, true) }
     }
 
     private fun filterByPrice(serverResponse: List<SalesItem>, price: String) {

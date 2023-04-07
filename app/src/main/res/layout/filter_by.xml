@@ -2,24 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:id="@+id/sort_by"
+    android:id="@+id/filter_by"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".SortByDialogFragment" >
+    tools:context=".FilterByDialogFragment" >
 
     <Spinner
-        android:id="@+id/sort_method"
-        android:contentDescription="Choose sorting method"
+        android:id="@+id/filter_method"
+        android:contentDescription="Choose filter method"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="12dp" />
 
-    <Spinner
-        android:id="@+id/sort_direction"
-        android:contentDescription="Choose sorting direction"
+    <EditText
+        android:id="@+id/filter_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:inputType="text" />
 
 </LinearLayout>

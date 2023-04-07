@@ -21,6 +21,9 @@
         <item>Highest</item>
         <item>Lowest</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="filter_methods">
+        <item>Description</item>
+        <item>Price</item>
+    </string-array>
 </resources>

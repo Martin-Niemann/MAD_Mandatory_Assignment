@@ -13,7 +13,7 @@ import androidx.fragment.app.DialogFragment
 import com.martinniemann.mandatoryassignment.databinding.SortByBinding
 
 interface SortByDialogListener {
-    fun onDialogPositiveClick(sortMethod: String, sortDirection: String)
+    fun onSortByDialogPositiveClick(sortMethod: String, sortDirection: String)
 }
 
 class SortByDialogFragment(private val sortByDialogListener: SortByDialogListener, private val existingSortMethod: String, private val existingSortDirection: String) : DialogFragment(), AdapterView.OnItemSelectedListener {
@@ -57,7 +57,7 @@ class SortByDialogFragment(private val sortByDialogListener: SortByDialogListene
             .setTitle("Sort by")
             .setPositiveButton(R.string.ok,
                 DialogInterface.OnClickListener { dialog, id ->
-                    sortByDialogListener.onDialogPositiveClick(sortMethod, sortDirection)
+                    sortByDialogListener.onSortByDialogPositiveClick(sortMethod, sortDirection)
                 }).create()
     }
 

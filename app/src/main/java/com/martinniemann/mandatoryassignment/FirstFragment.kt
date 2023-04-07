@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.martinniemann.mandatoryassignment.databinding.FragmentFirstBinding
 import com.martinniemann.mandatoryassignment.models.ListItemCardAdapter
 import com.martinniemann.mandatoryassignment.models.SalesItemsViewModel
@@ -22,7 +21,7 @@ import io.github.cdimascio.dotenv.dotenv
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment(), SortByDialogListener {
+class FirstFragment : Fragment(), SortByDialogListener, FilterByDialogListener {
     private val dotenv = dotenv {
         directory = "/assets"
         filename = "env" // instead of '.env', use 'env'
@@ -38,6 +37,8 @@ class FirstFragment : Fragment(), SortByDialogListener {
 
     private var sortMethod: String = ""
     private var sortDirection: String = ""
+    private var filterMethod: String = ""
+    private var filterValue: String = ""
 
     private lateinit var account: Account
 
@@ -130,11 +131,9 @@ class FirstFragment : Fragment(), SortByDialogListener {
             override fun onMenuItemSelected(item: MenuItem): Boolean {
                 return when (item.itemId) {
                     R.id.myStore -> {changeStoreStateAllOrUser()}
-                    R.id.filter -> true
+                    R.id.filter -> {showFilterByDialog()}
                     R.id.sort -> {showSortByDialog()}
-                    R.id.logout -> {
-                        runBlocking {logout()}
-                    }
+                    R.id.logout -> {runBlocking {logout()}}
                     else -> true
                 }
             }
@@ -178,12 +177,13 @@ class FirstFragment : Fragment(), SortByDialogListener {
         return true
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun showFilterByDialog(): Boolean {
+        val dialog = FilterByDialogFragment(this, filterMethod, filterValue)
+        dialog.show(parentFragmentManager, "FilterByDialogFragment")
+        return true
     }
 
-    override fun onDialogPositiveClick(sortMethod: String, sortDirection: String) {
+    override fun onSortByDialogPositiveClick(sortMethod: String, sortDirection: String) {
         // Save the values in this fragment and send them back to the next dialog
         this.sortMethod = sortMethod
         this.sortDirection = sortDirection
@@ -192,5 +192,20 @@ class FirstFragment : Fragment(), SortByDialogListener {
             "Price" -> {salesItemsViewModel.sortByPrice(sortDirection)}
             "Time" -> {salesItemsViewModel.sortByTime(sortDirection)}
         }
+    }
+
+    override fun onFilterByDialogPositiveClick(filterMethod: String, filterValue: String) {
+        this.filterMethod = filterMethod
+        this.filterValue = filterValue
+
+        when(filterMethod) {
+            "Description" -> {salesItemsViewModel.filterByDescription(filterValue)}
+            "Price" -> {salesItemsViewModel.filterByPrice(filterValue.toInt())}
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

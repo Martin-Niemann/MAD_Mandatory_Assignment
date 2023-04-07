@@ -34,7 +34,7 @@ class AddSalesItemFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentAddSalesItemBinding.inflate(inflater, container, false)
         return binding.root
@@ -54,23 +54,28 @@ class AddSalesItemFragment : Fragment() {
             val email: String = runBlocking {account.get().email}
             val phone: String = runBlocking {account.get().phone}
 
-            val salesItem: SalesItem = SalesItem(binding.description.text.toString(),
+            val salesItem = SalesItem(binding.description.text.toString(),
                                                  binding.price.text.toString().toInt(),
                                                  email,
                                                  phone,
-                                                 binding.time.text.toString().toLong())
+                                                 System.currentTimeMillis()/1000)
             salesItemsViewModel.add(salesItem)
-        }
 
-        salesItemsViewModel.updateStatusLiveData.observe(viewLifecycleOwner) {
-            val action =
-                AddSalesItemFragmentDirections.actionAddSalesItemFragmentToFirstFragment()
-            findNavController().navigate(action)
+            salesItemsViewModel.updateStatusLiveData.observe(viewLifecycleOwner) {
+                val action =
+                    AddSalesItemFragmentDirections.actionAddSalesItemFragmentToFirstFragment()
+                findNavController().navigate(action)
+            }
         }
 
         salesItemsViewModel.errorMessageLiveData.observe(viewLifecycleOwner) {errorMessage ->
             binding.progressBar.visibility = View.GONE
             binding.errorMessage.text = errorMessage
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -61,7 +61,7 @@ class SecondFragment : Fragment() {
             binding.price.text = salesItem.price.toString()
             binding.sellerEmail.text = salesItem.sellerEmail
             binding.sellerPhone.text = salesItem.sellerPhone
-            binding.time.text = salesItem.time.toString()
+            binding.time.text = salesItem.humanDate()
 
             val userEmail = runBlocking {account.get().email}
 
@@ -72,12 +72,12 @@ class SecondFragment : Fragment() {
             binding.removeItemButton.setOnClickListener {
                 binding.progressBar.visibility = View.VISIBLE
                 salesItemsViewModel.delete(salesItem.id)
-            }
 
-            salesItemsViewModel.removeStatusLiveData.observe(viewLifecycleOwner) {
-                val action =
-                    SecondFragmentDirections.actionSecondFragmentToFirstFragment()
-                findNavController().navigate(action)
+                salesItemsViewModel.removeStatusLiveData.observe(viewLifecycleOwner) {
+                    val action =
+                        SecondFragmentDirections.actionSecondFragmentToFirstFragment()
+                    findNavController().navigate(action)
+                }
             }
         }
 

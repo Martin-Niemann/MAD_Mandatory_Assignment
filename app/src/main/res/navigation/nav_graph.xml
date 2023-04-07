@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/LoginFragment"
         android:name="com.martinniemann.mandatoryassignment.LoginFragment"
-        android:label="Login and register"
+        android:label="Login and Register"
         tools:layout="@layout/fragment_login">
 
         <action
@@ -19,7 +19,7 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.martinniemann.mandatoryassignment.FirstFragment"
-        android:label="SalesItems"
+        android:label="Marketplace"
         tools:layout="@layout/fragment_first">
 
         <action

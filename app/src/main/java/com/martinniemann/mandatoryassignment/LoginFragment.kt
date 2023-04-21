@@ -1,6 +1,7 @@
 package com.martinniemann.mandatoryassignment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -87,6 +88,7 @@ class LoginFragment : Fragment() {
                     when(e) {
                         is AppwriteException, is IllegalArgumentException -> {
                             binding.errorMessage.text = e.message
+                            binding.errorMessage.setError("")
                         }
                     }
                 }
@@ -102,7 +104,9 @@ class LoginFragment : Fragment() {
                         LoginFragmentDirections.actionLoginFragmentToFirstFragment()
                     findNavController().navigate(action)
                 } catch (e: AppwriteException) {
+                    Log.e("Error", e.message.toString());
                     binding.errorMessage.text = e.message
+                    binding.errorMessage.setError("")
                 }
             }
         }

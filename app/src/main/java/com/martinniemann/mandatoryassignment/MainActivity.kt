@@ -1,15 +1,19 @@
 package com.martinniemann.mandatoryassignment
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.os.StrictMode
+import android.os.StrictMode.VmPolicy
+import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.activity.viewModels
+import com.google.android.material.snackbar.Snackbar
 import com.martinniemann.mandatoryassignment.databinding.ActivityMainBinding
 import com.martinniemann.mandatoryassignment.models.SalesItemsViewModel
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +22,12 @@ class MainActivity : AppCompatActivity() {
     private val salesItemsViewModel: SalesItemsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        StrictMode.setVmPolicy(
+            VmPolicy.Builder(StrictMode.getVmPolicy())
+                .detectLeakedClosableObjects()
+                .build()
+        )
+
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -36,6 +46,7 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(binding.root, "Item has been removed", Snackbar.LENGTH_SHORT).show()
         }
         salesItemsViewModel.errorMessageLiveData.observe(this) { message ->
+            Log.e("Error", message);
             Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
         }
     }
